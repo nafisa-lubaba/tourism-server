@@ -35,35 +35,65 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result)
     })
+    app.get('/myList/:email', async (req, res) => {
+      console.log(req.params.email)
+      const result = await cardCollection.find({ email: req.params.email }).toArray();
+      res.send(result)
 
-    app.post('/card', async(req, res)=>{
+    })
+    app.get('/card/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await cardCollection.findOne(query)
+      console.log(result)
+      res.send(result)
+
+  })
+
+    app.post('/card', async (req, res) => {
       const newCard = req.body
       console.log(newCard)
       const result = await cardCollection.insertOne(newCard)
       res.send(result)
     })
-    app.delete('/delete/:id', async(req ,res) =>{
+    app.put('/card/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) }
+      const options = { upsert: true }
+      const updateProducts = req.body;
+      const products = {
+        $set: {
+          
+
+          tourist_spot_name: updateProducts.tourist_spot_name,
+          country_Name: updateProducts.country_Name,
+          image: updateProducts.image,
+          location: updateProducts.location,
+          short_description: updateProducts.short_description,
+          average_cost: updateProducts.average_cost,
+          travel_time: updateProducts.travel_time,
+          seasonality: updateProducts.seasonality,
+         
+          totalVisitorsPerYear: updateProducts.totalVisitorsPerYear
+        }
+      }
+      const result = await cardCollection.updateOne(filter, products, options)
+      console.log(result);
+      res.send(result)
+    })
+    
+    app.delete('/delete/:id', async (req, res) => {
       const result = await cardCollection.deleteOne(
-        {_id: new ObjectId(req.params.id)}
+        { _id: new ObjectId(req.params.id) }
       )
       console.log(result)
       res.send(result)
     }
     )
-     
-    
 
-    app.get('/myList/:email', async (req, res) => {
-      console.log(req.params.email)
-      const result = await cardCollection.find({email:req.params.email}).toArray();
-      res.send(result)
 
-      // const id = req.params.id
-      // const query = { _id: new ObjectId(id) }
-      // const result = await coffeeCollection.findOne(query)
-      // res.send(result)
 
-    })
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -75,10 +105,10 @@ async function run() {
 run().catch(console.dir);
 
 
-app.get('/',(req, res)=>{
-    res.send('server is running')
+app.get('/', (req, res) => {
+  res.send('server is running')
 
 })
-app.listen(port,()=>{
-    console.log(`server is running on port:${port}`)
+app.listen(port, () => {
+  console.log(`server is running on port:${port}`)
 })
