@@ -36,6 +36,27 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result)
     })
+    // app.get('/card', async (req, res) => {
+    //   try {
+    //     const { sortBy } = req.query;
+    //     let sortQuery = {};
+    
+    //     // Check if sortBy parameter is provided and set the sortQuery accordingly
+    //     if (sortBy === 'asc') {
+    //       sortQuery = { average_cost: 1 }; // Sort by average_cost in ascending order
+    //     } else if (sortBy === 'desc') {
+    //       sortQuery = { average_cost: -1 }; // Sort by average_cost in descending order
+    //     }
+    
+    //     const cursor = cardCollection.find().sort(sortQuery); // Apply sorting
+    //     const result = await cursor.toArray();
+    //     res.send(result);
+    //   } catch (error) {
+    //     console.error('Error fetching and sorting data:', error);
+    //     res.status(500).json({ message: 'Server Error' });
+    //   }
+    // });
+    
     app.get('/myList/:email', async (req, res) => {
       console.log(req.params.email)
       const result = await cardCollection.find({ email: req.params.email }).toArray();
