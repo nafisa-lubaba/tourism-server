@@ -29,6 +29,7 @@ async function run() {
     await client.connect();
 
     const cardCollection = client.db('cardDB').collection('card')
+    const countryCollection = client.db('cardDB').collection('country')
 
     app.get('/card', async (req, res) => {
       const cursor = cardCollection.find();
@@ -49,6 +50,12 @@ async function run() {
       res.send(result)
 
   })
+  app.get('/country', async (req, res) => {
+    const cursor = countryCollection.find();
+    const result = await cursor.toArray();
+    res.send(result)
+  })
+  
 
     app.post('/card', async (req, res) => {
       const newCard = req.body
